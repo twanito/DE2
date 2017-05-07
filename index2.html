@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Design Explorer 3</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="lib/d3.min.js"></script>
+  
+  <!-- Parcoords bits and bobs -->
+<!-- SlickGrid -->
+<link rel="stylesheet" href="lib/slickgrid/slick.grid.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/jquery-ui-1.8.16.custom.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/examples.css" type="text/css"/>
+<link rel="stylesheet" href="lib/slickgrid/slick.pager.css" type="text/css"/>
+<script src="lib/slickgrid/jquery-1.7.min.js"></script>
+<script src="lib/slickgrid/jquery.event.drag-2.0.min.js"></script>
+<script src="lib/slickgrid/slick.core.js"></script>
+<script src="lib/slickgrid/slick.grid.js"></script>
+<script src="lib/slickgrid/slick.pager.js"></script>
+<script src="lib/slickgrid/slick.dataview.js"></script>
+<!-- End SlickGrid -->
+
+<link rel="stylesheet" type="text/css" href="lib/d3.parcoords.css">
+<script src="lib/d3.min.js"></script>
+<script src="lib/d3.parcoords.js"></script>
+<script src="lib/divgrid.js"></script>
+
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    .well{
+      width:100%;
+      height: 30%;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 500px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 400%;
+    }
+    
+    #main {
+      height:400%;
+    }
+    .btn-md {
+      white-space: normal;
+      width:100%;
+    }
+
+    .divider {
+      height:5px;
+    }
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="#">Logo</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Projects</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  
+<div class="container-fluid text-center" id="main">    
+  <div class="row content">
+    
+    <div class="col-md-2 sidenav" id="sidebar-wrapper">
+    <h4>Parameters</h4>
+    <svg class="well" id="legend"></svg>
+    </div>
+
+    <div class="col-md-8 text-left"> 
+      <h1>Welcome</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.orem ipsum dolor sit amet, consectetur adipiscing elit, sed do ei</p>
+      <hr>
+      <input type="file" id="uploader"></input>
+    
+      <div class="container-fluid text-center" id="main">    
+        <div class="row content">
+          <div class="col-md-8 text-left" id="scatterdrop">
+            Test 1 
+          </div>
+          <div class="col-md-8 text-left" id="scatter">
+            Test2
+          </div>
+        </div>
+      </div>
+      <h3>Inputs</h3>
+      <div id="paraIn" class="parcoords" style="height:250px"></div>
+      <h3>Outputs</h3>
+      <div id="paraOut" class="parcoords" style="height:250px"></div>
+      <div id="pager"></div>
+        <hr>
+        <h3>Test</h3>
+        <p>Lorem ipsum...</p>
+        <hr>
+      </div>
+      <div class="col-md-2 sidenav">
+    <h4>Document Information
+        <div class="well" style=" width: auto;">
+            <button id="savecsv" class="btn btn-default btn-md btn-block" onclick="saveToCSV()">Save Selection to File</button>
+            <div class="divider"></div> 
+            <button id="stilllink" class="btn btn-default btn-md btn-block" onclick="getStillLink()">My Static Link</button>
+            <div class="divider"></div>
+            <a class="btn btn-default btn-md btn-blcok" href="http://www.mpendesign.com/category/tutorial/" target="_blank">Tutorial</a>
+            <div class="divider"></div>
+            <a href="https://github.com/tt-acm/DesignExplorer/wiki" class="btn btn-default btn-md btn-block" target="_blank">Info <span class="glyphicon glyphicon-new-window"></span>
+            </a>
+        </div> 
+    </h4>
+      </div>
+  </div>
+</div>
+
+
+
+<footer class="container-fluid text-center">
+  <p>Footer Text</p>
+</footer>
+
+</body>
+</html>
+
+<script>
+  var parcoordsIn = d3.parcoords()("#paraIn")
+    .alpha(0.4)
+    .mode("queue") // progressive rendering
+    .height(240)
+    .margin({
+      top: 40,
+      left: 10,
+      right: 10,
+      bottom: 40
+    });
+
+  var parcoordsOut = d3.parcoords()("#paraOut")
+    .alpha(0.4)
+    .mode("queue") // progressive rendering
+    .height(240)
+    .margin({
+      top: 40,
+      left: 10,
+      right: 10,
+      bottom: 40
+    });
+
+  // create chart from loaded data
+  function parallelCoordinatesIn(data) {
+    // slickgrid needs each data element to have an id
+    //data.forEach(function(d,i) { d.id = d.id || i; });
+
+    parcoordsIn
+      .data(data)
+      .render()
+      .reorderable()
+      .interactive()
+      .brushMode("1D-axes");
+  };
+
+  function parallelCoordinatesOut(data) {
+    parcoordsOut
+      .data(data)
+      .render()
+      .reorderable()
+      .brushMode("1D-axes");
+  };
+
+  function getCaseId(inputParams) {
+    // create the id based on inputs
+    var params = [];
+    d3.keys(inputParams).forEach(function(key) {
+        // remove spaces
+        //var k = key.replace(/\s/g, '');
+        // convert to numbers and back to string
+        // so zeros doesn't make inconsistency
+        var value;
+        if (isNaN(inputParams[key])) {
+            value = inputParams[key];
+        } else {
+            value = parseFloat(inputParams[key]);
+        }
+
+        // add them to params
+        //params.push(k);
+        params.push(value);
+    });
+
+    // join all of them together
+    var id = params.join("");
+    return id;
+  }
+
+  // CSV Uploader
+  var uploader = document.getElementById("uploader");  
+  var reader = new FileReader();
+
+  reader.onload = function(e) {
+    var contents = e.target.result;
+    var data = d3.csv.parse(contents);
+    
+    var originalData, //csv as it is imported
+      cleanedData = [], //all the columns to be used for parallel coordinates
+      inputData = [], // columns with input values - to be used for sliders
+      outputData = [], // columns with output values - to be used for radar graph
+      slidersInfo = [], // {name:'inputName', tickValues : [sorted set of values]},
+      currentSliderValues = {}, // collector for values
+      allDataCollector = {},
+      slidersMapping = {}, // I collect the data for all the input sliders here so I can use it to remap the sliders later
+      ids = [], // Here I collect all data based on a unique ID from inputs
+      cleanedParams4pc = {};
+
+    function analyzeInputData(originalData) {
+      var keys = d3.keys(originalData[0]);
+      // var id = 0;
+
+      originalData.forEach(function(row, rowCount) {
+
+          var inputParams = {},
+              outputParams = {},
+              cleanedParams = {};
+
+          keys.forEach(function(key, i) {
+
+              // if (key.trim().startsWith("in:") !== true) {console.log("there is no inputs");}
+              if (key.trim().startsWith("in:")) {
+
+                  inputParams[key.replace("in:", "").trim()] = row[key];
+                  cleanedParams[key.replace("in:", "").trim()] = row[key];
+                  cleanedParams4pc[key.replace("in:", "").trim()] = {};
+
+
+              } else if (key.trim().startsWith("out:")) {
+
+                  outputParams[key.replace("out:", "").trim()] = row[key];
+                  cleanedParams[key.replace("out:", "").trim()] = row[key];
+                  cleanedParams4pc[key.replace("out:", "").trim()] = {};
+
+              } else {
+                  cleanedParams[key.trim()] = row[key]; // I need to add case for image and 3D here later
+                  if (key.trim() != "img" && key.trim() != "threeD") {
+                      cleanedParams4pc[key.trim()] = {};
+                  }
+              }
+          });
+
+          // var id = getCaseId(inputParams);
+          // id += 1;
+          // ids.push(id);
+          var id = getCaseId(inputParams);
+          ids.push(id);
+
+
+          allDataCollector[id] = {};
+          //allDataCollector[id]["inputData"] = inputParams; //don't need them for now
+          //allDataCollector[id]["outputParams"] = outputParams;
+          allDataCollector[id].cleanedParams = cleanedParams;
+
+          inputData.push(inputParams);
+          outputData.push(outputParams);
+          cleanedData.push(cleanedParams);
+      });
+
+
+      // add rating of 0 to all the options if not already there
+      if (keys.indexOf("Rating") == -1) {
+          cleanedParams4pc.Rating = {};
+          cleanedData.forEach(function(d) {
+              d.Rating = 0;
+          });
+      }
+    }
+
+    analyzeInputData(data);
+
+    drawScatter(cleanedData);
+
+    parallelCoordinatesIn(inputData);
+    parallelCoordinatesOut(outputData);
+
+    // remove button, since re-initializing doesn't work for now
+    uploader.parentNode.removeChild(uploader);
+
+    drawLegend(cleanedData);
+  };
+
+  uploader.addEventListener("change", handleFiles, false);  
+
+  function handleFiles() {
+    var file = this.files[0];
+    reader.readAsText(file);
+  };
+
+  parcoordsIn.on("brush", function(d){
+    var data = parcoordsIn.brushed().length > 0 ? parcoordsIn.brushed():parcoordsOut.data();
+    console.log(data.length);
+  });
+
+  function drawLegend(data) {
+
+      // add text
+      //d3.select("#legend-heading").text("LEGEND");
+
+      // get width and height for legend area
+      var legendWidth = d3.select("#legend").style("width").replace("px", "");
+      var legendHeight = d3.select("#sidebar-wrapper").style("height").replace("px", "") / 3;
+
+      // legend boxes are diminsions of the graph
+      //console.log(Object.keys(graph.dimensions()));
+      dimensions = d3.keys(parcoordsIn.dimensions()).map(function(d) {
+          return {
+              name: d,
+              enabled: true
+          };
+      });
+
+      // find size of the square based on the height
+      //var legendSquareSize = 16;
+      var legendSquareSize = Math.max(legendHeight / (d3.keys(parcoordsIn.dimensions()).length + 4), 3)/3;
+
+      // create one group for each rect and text
+      var legend = d3.select("#legend").append("svg")
+          .attr("width", legendWidth)
+          .attr("height", legendHeight)
+          .selectAll("g")
+          .data(dimensions)
+          .enter().append("g")
+          .attr("transform", function(d, i) {
+              return "translate(10," + ((legendSquareSize + 3) * i) + ")";
+          });
+
+      legend.append("rect")
+          .attr("width", legendSquareSize)
+          .attr("height", legendSquareSize)
+          .attr("class", "legend")
+          .style("fill", "grey")
+          .style("stroke", "black")
+          .style("stroke-width", 1)
+          .style("cursor", "pointer");
+
+      legend.append("text")
+          .attr("x", legendSquareSize + 6)
+          .attr("y", legendSquareSize / 2)
+          .attr("dy", ".35em")
+          .attr("font-size","10px")
+          .text(function(d) {
+              return d.name;
+          });
+  };
+
+function drawScatter(data){
+  // Select X-axis Variable
+  var axisbox = d3.select("#scatterdrop")
+
+  var span = axisbox.append('span')
+    .text('Select X-Axis variable: ')
+  var yInput = axisbox.append('select')
+      .attr('id','xSelect')
+      .on('change',xChange)
+      .selectAll('option')
+      .data(data)
+      .enter()
+      .append('option')
+      .attr('value', function (d) { return d.text })
+      .text(function (d) { return d.text ;})
+  
+  axisbox.append('br')
+
+  // Select Y-axis Variable
+  var span = axisbox.append('span')
+      .text('Select Y-Axis variable: ')
+  var yInput = axisbox.append('select')
+      .attr('id','ySelect')
+      .on('change',yChange)
+      .selectAll('option')
+      .data(data)
+      .enter()
+      .append('option')
+      .attr('value', function (d) { return d.text })
+      .text(function (d) { return d.text ;})
+  
+  axisbox.append('br')
+
+  // Variables
+  var body = d3.select("#scatter")
+  var margin = { top: 10, right: 10, bottom: 10, left: 10 }
+  var h = 300 - margin.top - margin.bottom
+  var w = 300 - margin.left - margin.right
+  var formatPercent = d3.format('.2%')
+  // Scales
+  var colorScale = d3.scale.category20()
+  var xScale = d3.scale
+    .linear()
+    .domain([
+      d3.min([0,d3.min(data,function (d) { return d[0] })]),
+      d3.max([0,d3.max(data,function (d) { return d[0] })])
+      ])
+    .range([0,w])
+  var yScale = d3.scale.linear()
+    .domain([
+      d3.min([0,d3.min(data,function (d) { return d[0] })]),
+      d3.max([0,d3.max(data,function (d) { return d[0] })])
+      ])
+    .range([h,0])
+  // SVG
+  var svg = body.append('svg')
+      .attr('height',h + margin.top + margin.bottom)
+      .attr('width',w + margin.left + margin.right)
+      .append('g')
+      .attr('transform','translate(' + margin.left + ',' + margin.top + ')')
+  // X-axis
+  var xAxis = d3.svg.axis()
+    .scale(xScale)
+    .ticks(5)
+    .orient('bottom')
+  // Y-axis
+  var yAxis = d3.svg.axis()
+    .scale(yScale)
+    .ticks(5)
+    .orient('left')
+  // Circles
+  var circles = svg.selectAll('circle')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr('cx',function (d) { return xScale(d[0]) })
+      .attr('cy',function (d) { return yScale(d[0]) })
+      .attr('r','10')
+      .attr('stroke','black')
+      .attr('stroke-width',1)
+      .attr('fill',function (d,i) { return colorScale(i) })
+      .on('mouseover', function () {
+        d3.select(this)
+          .transition()
+          .duration(500)
+          .attr('r',20)
+          .attr('stroke-width',3)
+      })
+      .on('mouseout', function () {
+        d3.select(this)
+          .transition()
+          .duration(500)
+          .attr('r',10)
+          .attr('stroke-width',1)
+      })
+      .append('title') // Tooltip
+      .text(function (d) { return d.variable +
+                           '\nReturn: ' + formatPercent(d['Annualized Return']) +
+                           '\nStd. Dev.: ' + formatPercent(d['Annualized Standard Deviation']) +
+                           '\nMax Drawdown: ' + formatPercent(d['Maximum Drawdown']) })
+  // X-axis
+  svg.append('g')
+      .attr('class','axis')
+      .attr('id','xAxis')
+      .attr('transform', 'translate(0,' + h + ')')
+      .call(xAxis)
+      .append('text') // X-axis Label
+      .attr('id','xAxisLabel')
+      .attr('y',-10)
+      .attr('x',w)
+      .attr('dy','.71em')
+      .style('text-anchor','end')
+      .text('Annualized Return')
+  // Y-axis
+  svg.append('g')
+      .attr('class','axis')
+      .attr('id','yAxis')
+      .call(yAxis)
+      .append('text') // y-axis Label
+      .attr('id', 'yAxisLabel')
+      .attr('transform','rotate(-90)')
+      .attr('x',0)
+      .attr('y',5)
+      .attr('dy','.71em')
+      .style('text-anchor','end')
+      .text('Annualized Return')
+
+  function yChange() {
+    var value = this.value // get the new y value
+    yScale // change the yScale
+      .domain([
+        d3.min([0,d3.min(data,function (d) { return d[value] })]),
+        d3.max([0,d3.max(data,function (d) { return d[value] })])
+        ])
+    yAxis.scale(yScale) // change the yScale
+    d3.select('#yAxis') // redraw the yAxis
+      .transition().duration(100)
+      .call(yAxis)
+    d3.select('#yAxisLabel') // change the yAxisLabel
+      .text(value)    
+    d3.selectAll('circle') // move the circles
+      .transition().duration(100)
+      .delay(function (d,i) { return i*100})
+        .attr('cy',function (d) { return yScale(d[value]) })
+  }
+
+  function xChange() {
+    var value = this.value // get the new x value
+    xScale // change the xScale
+      .domain([
+        d3.min([0,d3.min(data,function (d) { return d[value] })]),
+        d3.max([0,d3.max(data,function (d) { return d[value] })])
+        ])
+    xAxis.scale(xScale) // change the xScale
+    d3.select('#xAxis') // redraw the xAxis
+      .transition().duration(1000)
+      .call(xAxis)
+    d3.select('#xAxisLabel') // change the xAxisLabel
+      .transition().duration(1000)
+      .text(value)
+    d3.selectAll('circle') // move the circles
+      .transition().duration(1000)
+      .delay(function (d,i) { return i*100})
+        .attr('cx',function (d) { return xScale(d[value]) })
+    }
+  };
+
+
+
+
+</script>
